@@ -31,10 +31,19 @@ export class Unicorn {
             
             this.model = gltf.scene;
             
+            // Debug: Print model structure
+            console.log('Model structure:');
+            this.model.traverse((object) => {
+                console.log(`Object name: "${object.name}", Type: ${object.type}`);
+                if (object.isBone) {
+                    console.log('Found bone:', object.name);
+                }
+            });
+            
             // Apply default transformations
             this.model.position.y = -1.2;
             this.model.position.x = -4; // Start from left
-            this.model.scale.set(3, 3, 3); // Make it a bit smaller
+            this.model.scale.set(2, 2, 2); // Make it a bit smaller
             
             // Store animations if they exist
             if (gltf.animations && gltf.animations.length > 0) {
@@ -71,13 +80,63 @@ export class Unicorn {
     }
 
     createBobbingAnimation() {
-        gsap.to(this.model.position, {
-            y: this.initialY + 0.1,
-            duration: 0.5,
-            yoyo: true,
-            repeat: -1,
-            ease: "sine.inOut"
+        if (!this.model) return;
+
+        // Create a more complex walking animation using multiple transformations
+        const timeline = gsap.timeline({
+            repeat: -1
         });
+
+        // Store initial position and rotation
+        const startY = this.initialY;
+        const startRotZ = this.model.rotation.z;
+
+        // Combined walking motion
+        timeline
+            // Step 1: Forward tilt and up
+            .to(this.model.position, {
+                y: startY + 0.1,
+                duration: 0.3,
+                ease: "sine.inOut"
+            })
+            .to(this.model.rotation, {
+                z: startRotZ - 0.05,
+                duration: 0.3,
+                ease: "sine.inOut"
+            }, "<")
+            // Step 2: Back to center and down
+            .to(this.model.position, {
+                y: startY - 0.05,
+                duration: 0.3,
+                ease: "sine.inOut"
+            })
+            .to(this.model.rotation, {
+                z: startRotZ + 0.05,
+                duration: 0.3,
+                ease: "sine.inOut"
+            }, "<")
+            // Step 3: Slight backward tilt and up
+            .to(this.model.position, {
+                y: startY + 0.1,
+                duration: 0.3,
+                ease: "sine.inOut"
+            })
+            .to(this.model.rotation, {
+                z: startRotZ + 0.05,
+                duration: 0.3,
+                ease: "sine.inOut"
+            }, "<")
+            // Step 4: Back to starting position
+            .to(this.model.position, {
+                y: startY,
+                duration: 0.3,
+                ease: "sine.inOut"
+            })
+            .to(this.model.rotation, {
+                z: startRotZ,
+                duration: 0.3,
+                ease: "sine.inOut"
+            }, "<");
     }
 
     updateWalking(deltaTime) {
