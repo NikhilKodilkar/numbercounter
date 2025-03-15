@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Counting Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <div id="ui-container">
+            <div id="game-content">
+                <div id="question-area">
+                    <h1>Count with the Unicorn! 🦄</h1>
+                    <div class="game-header">
+                        <div id="score-container">Score: <span id="score-value">0</span></div>
+                        <div id="streak-container">
+                            Current Streak: <span id="streak-value">0</span> | Best: <span id="best-streak-value">0</span>
+                        </div>
+                    </div>
+                    <div id="question-container">
+                        <p>After <span id="current-number">37</span>, what are the next three numbers?</p>
+                        <div id="input-container">
+                            <input type="number" id="first-answer" min="0" max="99" maxlength="2">
+                            <input type="number" id="second-answer" min="0" max="99" maxlength="2">
+                            <input type="number" id="third-answer" min="0" max="99" maxlength="2">
+                            <button id="submit-button">GO !</button>
+                        </div>
+                        <button class="refresh-button">↻</button>
+                    </div>
+                    <div id="message"></div>
+                </div>
+            </div>
+        </div>
+        <div id="debug-console">
+            <div id="debug-console-header">
+                <span>Debug Console</span>
+                <span id="debug-console-toggle">[-]</span>
+            </div>
+            <div id="debug-console-content"></div>
+        </div>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html> 
