@@ -44,6 +44,7 @@ export class Unicorn {
             this.model.position.y = -1.2;
             this.model.position.x = -4; // Start from left
             this.model.scale.set(2, 2, 2); // Make it a bit smaller
+            this.model.rotation.y = Math.PI; // Initial rotation to face right
             
             // Store animations if they exist
             if (gltf.animations && gltf.animations.length > 0) {
@@ -149,10 +150,10 @@ export class Unicorn {
         // Check bounds and turn around if needed
         if (this.model.position.x >= this.walkBounds.right) {
             this.walkDirection = -1; // Start walking left
-            this.model.rotation.y = Math.PI; // Turn around
+            this.model.rotation.y = 0; // Reversed: Face left
         } else if (this.model.position.x <= this.walkBounds.left) {
             this.walkDirection = 1; // Start walking right
-            this.model.rotation.y = 0; // Turn around
+            this.model.rotation.y = Math.PI; // Reversed: Face right
         }
     }
 
@@ -280,8 +281,8 @@ export class Unicorn {
                     opacity: 0,
                     duration: 0.5
                 });
-                // Return to original walking state
-                this.model.rotation.set(0, this.walkDirection < 0 ? Math.PI : 0, 0);
+                // Return to original walking state with correct rotation
+                this.model.rotation.set(0, this.walkDirection > 0 ? Math.PI : 0, 0);
                 this.model.position.z = 0;
             }
         });
@@ -301,7 +302,7 @@ export class Unicorn {
             })
             // Turn to face screen
             .to(this.model.rotation, {
-                y: -Math.PI / 2, // Face the screen
+                y: Math.PI/2, // Face towards the screen instead of away
                 duration: 0.5,
                 ease: "power2.inOut"
             })
@@ -323,7 +324,7 @@ export class Unicorn {
                 ease: "power2.out"
             })
             .to(this.model.rotation, {
-                y: -Math.PI / 2 + Math.PI * 2,
+                y: Math.PI/2 + Math.PI * 2, // Spin while facing towards screen
                 duration: 0.8,
                 ease: "none"
             }, "-=0.4")
@@ -339,8 +340,9 @@ export class Unicorn {
                 duration: 0.8,
                 ease: "power1.inOut"
             })
+            // Turn back to walking direction before completing
             .to(this.model.rotation, {
-                y: originalRotationY,
+                y: this.walkDirection > 0 ? Math.PI : 0,
                 duration: 0.5,
                 ease: "power2.inOut"
             }, "-=0.4");
@@ -362,8 +364,8 @@ export class Unicorn {
                 if (this.animations['walk']) {
                     this.animations['walk'].reset().play();
                 }
-                // Return to original position and rotation
-                this.model.rotation.set(0, this.walkDirection < 0 ? Math.PI : 0, 0);
+                // Return to original position and rotation with correct direction
+                this.model.rotation.set(0, this.walkDirection > 0 ? Math.PI : 0, 0);
                 this.model.position.z = 0;
             }
         });
@@ -382,7 +384,7 @@ export class Unicorn {
             })
             // Turn to face screen
             .to(this.model.rotation, {
-                y: -Math.PI / 2, // Face the screen
+                y: Math.PI/2, // Face towards the screen instead of away
                 duration: 0.5,
                 ease: "power2.inOut"
             })
@@ -394,32 +396,32 @@ export class Unicorn {
             })
             // Head shake "no" animation - horizontal shaking
             .to(this.model.rotation, {
-                y: -Math.PI / 2 + 0.3, // Shake right
+                y: Math.PI/2 + 0.3, // Shake right while facing screen
                 duration: 0.15,
                 ease: "power2.out"
             })
             .to(this.model.rotation, {
-                y: -Math.PI / 2 - 0.3, // Shake left
+                y: Math.PI/2 - 0.3, // Shake left while facing screen
                 duration: 0.15,
                 ease: "power1.inOut"
             })
             .to(this.model.rotation, {
-                y: -Math.PI / 2 + 0.3, // Shake right
+                y: Math.PI/2 + 0.3, // Shake right while facing screen
                 duration: 0.15,
                 ease: "power1.inOut"
             })
             .to(this.model.rotation, {
-                y: -Math.PI / 2 - 0.3, // Shake left
+                y: Math.PI/2 - 0.3, // Shake left while facing screen
                 duration: 0.15,
                 ease: "power1.inOut"
             })
             .to(this.model.rotation, {
-                y: -Math.PI / 2 + 0.3, // Shake right
+                y: Math.PI/2 + 0.3, // Shake right while facing screen
                 duration: 0.15,
                 ease: "power1.inOut"
             })
             .to(this.model.rotation, {
-                y: -Math.PI / 2, // Return to center
+                y: Math.PI/2, // Return to center while facing screen
                 duration: 0.15,
                 ease: "power2.inOut"
             })
@@ -430,8 +432,9 @@ export class Unicorn {
                 duration: 0.8,
                 ease: "power1.inOut"
             })
+            // Turn back to walking direction before completing
             .to(this.model.rotation, {
-                y: originalRotationY,
+                y: this.walkDirection > 0 ? Math.PI : 0,
                 duration: 0.5,
                 ease: "power2.inOut"
             }, "-=0.4");
